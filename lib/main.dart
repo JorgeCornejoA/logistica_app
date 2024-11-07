@@ -66,39 +66,6 @@ class AuthGate extends StatelessWidget {
   }
 }
 
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'App de Direcciones',
-//       theme: ThemeData(
-//         primarySwatch: Colors.green, // Cambia el color primario a tonos verdes
-//         scaffoldBackgroundColor: Colors.green[50], // Fondo suave verde
-//         appBarTheme: AppBarTheme(
-//           backgroundColor: Colors.green[700], // Color de la AppBar
-//           iconTheme: IconThemeData(color: Colors.white),
-//           titleTextStyle: TextStyle(
-//             // Cambia el color del texto del título a blanco
-//             color: Colors.white,
-//             fontSize: 20, // Ajustar el tamaño de la fuente
-//             fontWeight: FontWeight.bold,
-//           ),
-//         ),
-//         floatingActionButtonTheme: FloatingActionButtonThemeData(
-//           backgroundColor: Colors.green, // Color del botón flotante
-//         ),
-//         elevatedButtonTheme: ElevatedButtonThemeData(
-//           style: ElevatedButton.styleFrom(
-//             backgroundColor: Colors.green[600], // Color de botones elevados
-//           ),
-//         ),
-//       ),
-//       home: HomePage(),
-//       debugShowCheckedModeBanner: false, // Elimina el banner de debug
-//     );
-//   }
-// }
-
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -123,15 +90,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> obtenerDirecciones() async {
-    final response =
-        await Supabase.instance.client.from('direcciones').select();
+  final response = await Supabase.instance.client.from('direcciones').select();
+  setState(() {
+    _direcciones = response;
+    _direcciones.sort((a, b) => a['id'].compareTo(b['id']));
+    _direccionesFiltradas = _direcciones;
+  });
+}
 
-    setState(() {
-      _direcciones = response;
-      _direcciones.sort((a, b) => a['id'].compareTo(b['id']));
-      _direccionesFiltradas = _direcciones;
-    });
-  }
 
   Future<void> refrescarDirecciones() async {
     await obtenerDirecciones();
@@ -250,35 +216,18 @@ class _HomePageState extends State<HomePage> {
                             subtitle: Text(
                                 '${direccion['calle']} ${direccion['numero']}, ${direccion['colonia']}'),
                             onTap: () async {
-                              final result = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DetalleDireccionPage(
-                                      direccion: direccion),
-                                ),
-                              );
+  final result = await Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => DetalleDireccionPage(direccion: direccion),
+    ),
+  );
 
-                              if (result == true) {
-                                // Intentar actualizar la dirección modificada
-                                try {
-                                  final actualizada = await Supabase
-                                      .instance.client
-                                      .from('direcciones')
-                                      .select()
-                                      .eq('id', direccion['id'])
-                                      .single();
+  if (result == true) {
+    await obtenerDirecciones(); // Refresca la lista si hubo eliminación o edición
+  }
+},
 
-                                  if (actualizada != null) {
-                                    setState(() {
-                                      _direcciones[index] = actualizada;
-                                    });
-                                  }
-                                } catch (e) {
-                                  print(
-                                      'Error al obtener la dirección actualizada: $e');
-                                }
-                              }
-                            },
                           ),
                         );
                       },
@@ -341,33 +290,34 @@ Estado: ${direccion['estado']}
     Share.share(direccionFormateada);
   }
 
-  void mostrarPopupEliminar(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Confirmar Eliminación'),
-          content: Text('¿Estás seguro de que deseas eliminar esta dirección?'),
-          actions: [
-            TextButton(
-              child: Text('Cancelar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Eliminar'),
-              onPressed: () async {
-                await eliminarDireccion();
-                Navigator.of(context).pop();
-                Navigator.of(context).pop(true);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+void mostrarPopupEliminar(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Confirmar Eliminación'),
+        content: Text('¿Estás seguro de que deseas eliminar esta dirección?'),
+        actions: [
+          TextButton(
+            child: Text('Cancelar'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: Text('Eliminar'),
+            onPressed: () async {
+              await eliminarDireccion();
+              Navigator.of(context).pop();
+              Navigator.of(context).pop(true); // Notifica a HomePage
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -584,7 +534,22 @@ class _AddDireccionScreenState extends State<AddDireccionScreen> {
   final TextEditingController _ciudadController = TextEditingController();
   final TextEditingController _estadoController = TextEditingController();
 
+  @override
+  void dispose() {
+    _lugarController.dispose();
+    _calleController.dispose();
+    _ciudadController.dispose();
+    // Disponer otros controladores
+    super.dispose();
+  }
+
   Future<void> _agregarDireccion() async {
+    // Validación de campos obligatorios
+    if (_lugarController.text.isEmpty || _calleController.text.isEmpty || _ciudadController.text.isEmpty) {
+      _mostrarAlerta('Por favor, complete los campos obligatorios: Lugar, Calle y Ciudad');
+      return; // Salir si algún campo obligatorio está vacío
+    }
+
     try {
       await Supabase.instance.client.from('direcciones').insert({
         'lugar': _lugarController.text,
@@ -602,6 +567,23 @@ class _AddDireccionScreenState extends State<AddDireccionScreen> {
       print('Error al agregar la dirección: $e');
     }
   }
+
+  void _mostrarAlerta(String mensaje) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Campos obligatorios'),
+        content: Text(mensaje),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
