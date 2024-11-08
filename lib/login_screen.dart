@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '¡Bienvenido a la app de Logística!',
+                  '¡Bienvenid@ a la app de Logística!',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
