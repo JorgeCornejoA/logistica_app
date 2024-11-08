@@ -66,31 +66,32 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: Text('Fruver - Direcciones carga y descarga'),
       ),
-      body: SingleChildScrollView( // Solución para el error de desbordamiento
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: 40),
-              Text(
-                'Bienvenido a Fruver',
-                style: TextStyle(fontSize: 20),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 20),
-              Image.asset(
-                'assets/logo_app.png',
-                height: 210,
-              ),
-              Text(
-                'Iniciar sesión',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 32),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 400),
-                child: TextField(
+      body: Center(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 32.0),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 400), // Define el ancho máximo
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: 10),
+                Text(
+                  'Bienvenid@ a la app de Fruver',
+                  style: TextStyle(fontSize: 20),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20),
+                Image.asset(
+                  'assets/logo_app.png',
+                  height: 210,
+                ),
+                Text(
+                  'Iniciar sesión',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 32),
+                TextField(
                   controller: _emailController,
                   decoration: InputDecoration(
                     labelText: 'Correo Electrónico',
@@ -104,11 +105,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 16),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 400),
-                child: TextField(
+                SizedBox(height: 16),
+                TextField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
@@ -133,23 +131,23 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: signIn,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+                SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: signIn,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                  child: Text(
+                    'Iniciar Sesión',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
-                child: Text(
-                  'Iniciar Sesión',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
