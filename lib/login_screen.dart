@@ -69,84 +69,86 @@ class _LoginPageState extends State<LoginPage> {
       body: Center(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 32.0),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 400), // Define el ancho máximo
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: 10),
-                Text(
-                  'Bienvenid@ a la app de Fruver',
-                  style: TextStyle(fontSize: 20),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 20),
-                Image.asset(
-                  'assets/logo_app.png',
-                  height: 210,
-                ),
-                Text(
-                  'Iniciar sesión',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 32),
-                TextField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: 'Correo Electrónico',
-                    prefixIcon: Icon(Icons.email),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: BorderSide(color: Colors.green),
-                    ),
+          child: Center( // Asegura que esté centrado también en web
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 400), // Define el ancho máximo
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 40),
+                  Text(
+                    'Bienvenido a Fruver',
+                    style: TextStyle(fontSize: 20),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                SizedBox(height: 16),
-                TextField(
-                  controller: _passwordController,
-                  obscureText: _obscurePassword,
-                  decoration: InputDecoration(
-                    labelText: 'Contraseña',
-                    prefixIcon: Icon(Icons.lock),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                  SizedBox(height: 20),
+                  Image.asset(
+                    'assets/logo_app.png',
+                    height: 210,
+                  ),
+                  Text(
+                    'Iniciar sesión',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 32),
+                  TextField(
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Correo Electrónico',
+                      prefixIcon: Icon(Icons.email),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: BorderSide(color: Colors.green),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: BorderSide(color: Colors.green),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: signIn,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                  SizedBox(height: 16),
+                  TextField(
+                    controller: _passwordController,
+                    obscureText: _obscurePassword,
+                    decoration: InputDecoration(
+                      labelText: 'Contraseña',
+                      prefixIcon: Icon(Icons.lock),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: BorderSide(color: Colors.green),
+                      ),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                   ),
-                  child: Text(
-                    'Iniciar Sesión',
-                    style: TextStyle(color: Colors.white),
+                  SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: signIn,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                    ),
+                    child: Text(
+                      'Iniciar Sesión',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
