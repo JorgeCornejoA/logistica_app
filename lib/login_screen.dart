@@ -11,6 +11,7 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _supabase = Supabase.instance.client;
+  bool _obscurePassword = true;
 
   Future<void> signIn() async {
     final email = _emailController.text.trim();
@@ -65,66 +66,91 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: Text('Fruver - Direcciones carga y descarga'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/logo_app.png',
-              height: 210,
-            ),
-            Text(
-              'Iniciar sesión',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 32),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Correo Electrónico',
-                prefixIcon: Icon(Icons.email),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                  borderSide: BorderSide(color: Colors.green),
+      body: SingleChildScrollView( // Solución para el error de desbordamiento
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 40),
+              Text(
+                'Bienvenido a Fruver',
+                style: TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
+              Image.asset(
+                'assets/logo_app.png',
+                height: 210,
+              ),
+              Text(
+                'Iniciar sesión',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 32),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 400),
+                child: TextField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    labelText: 'Correo Electrónico',
+                    prefixIcon: Icon(Icons.email),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide: BorderSide(color: Colors.green),
+                    ),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                labelText: 'Contraseña',
-                prefixIcon: Icon(Icons.lock),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                  borderSide: BorderSide(color: Colors.green),
+              SizedBox(height: 16),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 400),
+                child: TextField(
+                  controller: _passwordController,
+                  obscureText: _obscurePassword,
+                  decoration: InputDecoration(
+                    labelText: 'Contraseña',
+                    prefixIcon: Icon(Icons.lock),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide: BorderSide(color: Colors.green),
+                    ),
+                  ),
                 ),
               ),
-              obscureText: true,
-            ),
-            SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: signIn,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+              SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: signIn,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                child: Text(
+                  'Iniciar Sesión',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
-              child: Text(
-                'Iniciar Sesión',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
