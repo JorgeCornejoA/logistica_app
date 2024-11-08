@@ -170,7 +170,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Direcciones'),
+        title: Text('Fruver - Direcciones carga y descarga'),
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
