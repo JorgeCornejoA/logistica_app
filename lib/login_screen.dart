@@ -11,7 +11,7 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _supabase = Supabase.instance.client;
-  bool _obscurePassword = true;
+  bool _isPasswordVisible = false;
 
   Future<void> signIn() async {
     final email = _emailController.text.trim();
@@ -69,30 +69,32 @@ class _LoginPageState extends State<LoginPage> {
       body: Center(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 32.0),
-          child: Center( // Asegura que esté centrado también en web
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 400), // Define el ancho máximo
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(height: 40),
-                  Text(
-                    'Bienvenido a Fruver',
-                    style: TextStyle(fontSize: 20),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 20),
-                  Image.asset(
-                    'assets/logo_app.png',
-                    height: 210,
-                  ),
-                  Text(
-                    'Iniciar sesión',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 32),
-                  TextField(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '¡Bienvenido a la app de Logística!',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20),
+                Image.asset(
+                  'assets/logo_app.png',
+                  height: 210,
+                ),
+                SizedBox(height: 16),
+                Text(
+                  'Iniciar sesión',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 32),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width < 600
+                      ? MediaQuery.of(context).size.width * 0.8
+                      : 400, // Limita el ancho en pantallas grandes
+                  child: TextField(
                     controller: _emailController,
                     decoration: InputDecoration(
                       labelText: 'Correo Electrónico',
@@ -106,23 +108,17 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 16),
-                  TextField(
+                ),
+                SizedBox(height: 16),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width < 600
+                      ? MediaQuery.of(context).size.width * 0.8
+                      : 400, // Limita el ancho en pantallas grandes
+                  child: TextField(
                     controller: _passwordController,
-                    obscureText: _obscurePassword,
                     decoration: InputDecoration(
                       labelText: 'Contraseña',
                       prefixIcon: Icon(Icons.lock),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePassword ? Icons.visibility : Icons.visibility_off,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _obscurePassword = !_obscurePassword;
-                          });
-                        },
-                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),
@@ -130,25 +126,38 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(30.0),
                         borderSide: BorderSide(color: Colors.green),
                       ),
-                    ),
-                  ),
-                  SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: signIn,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                     ),
-                    child: Text(
-                      'Iniciar Sesión',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    obscureText: !_isPasswordVisible,
                   ),
-                ],
-              ),
+                ),
+                SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: signIn,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                  ),
+                  child: Text(
+                    'Iniciar Sesión',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -156,4 +165,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
